@@ -195,6 +195,8 @@ As a registered user, I want to be able to log in to the web shop securely, with
 
 As a registered user, I want to be able to reset my password through a secure process using my email address, so that I can regain access to my account.
 
+As a registered user, I want to be able to delete my account from the web shop, so that my personal data is no longer stored on the platform.
+
 As a registered user, I want to receive email notifications for important account-related activities, so that I can stay informed about my account and filter out suspicious activities.
 
 ---
