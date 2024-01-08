@@ -3,7 +3,11 @@
 ### Objective of the Website 
 The primary aim of the website is to establish a user-friendly and secure online shopping platform. Its adaptable nature allows for customization, catering to the distinct needs and preferences of each customer. Whether personalizing the shopping experience or ensuring a seamless transaction process, the website is designed to deliver a user-centric and flexible webshop environment.
 
-### User Account Management:
+### High Level Architecture
+
+<img width="1270" alt="High level architecture diagram" src="https://github.com/fruzsina-banyai/webshop/blob/f654d1244be6c203304b8502fad9bbf26250a055/documentation/user_management_service/hla.png">
+
+### [User Management Service](https://github.com/fruzsina-banyai/webshop/blob/main/documentation/user_management_service/user_management_service.md)
 As a user, I aim to monitor my orders and revisit information about my previous purchases. Achieving this involves establishing a user management service.
 
 ### Product Catalog
