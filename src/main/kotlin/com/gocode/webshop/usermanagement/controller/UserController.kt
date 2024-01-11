@@ -1,8 +1,10 @@
 package com.gocode.webshop.usermanagement.controller
 
+import com.gocode.webshop.usermanagement.dto.AddressDto
 import com.gocode.webshop.usermanagement.dto.UserDto
 import com.gocode.webshop.usermanagement.model.User
 import com.gocode.webshop.usermanagement.model.fromUserDto
+import com.gocode.webshop.usermanagement.model.toAddressDto
 import com.gocode.webshop.usermanagement.model.toUserDto
 import com.gocode.webshop.usermanagement.service.UserService
 import org.springframework.http.ResponseEntity
@@ -19,6 +21,12 @@ class UserController(
         return ResponseEntity
             .ok()
             .body(userService.findUserById(userId).toUserDto())
+    }
+
+    fun findAddressesByUserId(userId: UUID): ResponseEntity<List<AddressDto>> {
+        return ResponseEntity
+            .ok()
+            .body(userService.getAddresses(userId).map { it.toAddressDto() }.toList())
     }
 
     fun createUser(userDto: UserDto): ResponseEntity<UserDto> {

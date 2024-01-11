@@ -1,13 +1,16 @@
 package com.gocode.webshop.usermanagement.service
 
 import com.gocode.webshop.usermanagement.errors.EntityNotFoundException
+import com.gocode.webshop.usermanagement.model.Address
 import com.gocode.webshop.usermanagement.model.User
+import com.gocode.webshop.usermanagement.repository.AddressRepository
 import com.gocode.webshop.usermanagement.repository.UserRepository
 import java.lang.IllegalArgumentException
 import java.util.*
 
 class UserService (
-    private val userRepository : UserRepository
+    private val userRepository : UserRepository,
+    private val addressRepository: AddressRepository,
 ) {
     fun findUserById(id: UUID) : User {
         return userRepository.findById(id).orElseThrow { throw EntityNotFoundException(id.toString(), User::class.java) }
@@ -43,5 +46,9 @@ class UserService (
 
     fun findAllUsers(): List<User> {
         return userRepository.findAll()
+    }
+
+    fun getAddresses(id: UUID): List<Address> {
+        return addressRepository.findByUserId(id).takeIf { it.isNotEmpty() } ?: throw EntityNotFoundException(id.toString(), User::class.java)
     }
 }

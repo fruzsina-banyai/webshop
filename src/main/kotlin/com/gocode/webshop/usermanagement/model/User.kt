@@ -13,7 +13,7 @@ import java.util.UUID
 data class User (
     @Id
     @Column(name = "id", unique = true, nullable = false, updatable = false)
-    val id: UUID?   ,
+    val id: UUID?,
 
     @Column(name = "role", nullable = false)
     val role: String,
@@ -27,7 +27,7 @@ data class User (
     @Column(name = "email", unique = true, nullable = false)
     val email: String,
 
-    @Column(name = "phone_number", unique = true, nullable = false)
+    @Column(name = "phone_number", nullable = false)
     val phoneNumber: String,
 
     @Column(name = "password", nullable = false)
@@ -54,7 +54,7 @@ data class User (
 
 fun User.Companion.fromUserDto(userDto: UserDto) : User {
     return User(
-        id = userDto.id ?: UUID.randomUUID(),
+        id = userDto.id,
         role = userDto.role,
         firstName = userDto.firstName,
         lastName = userDto.lastName,

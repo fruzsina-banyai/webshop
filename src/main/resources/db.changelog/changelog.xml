@@ -21,7 +21,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="email" type="string">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
             <column name="phone_number" type="string">
                 <constraints nullable="false"/>
