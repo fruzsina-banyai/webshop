@@ -1,0 +1,7 @@
+spring:
+  liquibase:
+    change-log: classpath:/db/changelog/changelog.xml
+  datasource:
+    url: jdbc:postgresql://${GL_UMS_DB_HOST}:${GL_UMS_DB_PORT}/${GL_UMS_DB_NAME}
+    username: ${GL_UMS_DB_USER_NAME}
+    password: ${GL_UMS_DB_PASSWORD}
