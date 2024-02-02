@@ -3,15 +3,17 @@ package com.gocode.webshop.usermanagement.model
 import com.gocode.webshop.usermanagement.dto.UserDto
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.hibernate.Hibernate
 import java.util.UUID
 
 @Entity
-@Table(name = "user")
+@Table(name = "\"user\"")
 data class User (
     @Id
+    @GeneratedValue
     @Column(name = "id", unique = true, nullable = false, updatable = false)
     val id: UUID?,
 
@@ -60,7 +62,8 @@ fun User.Companion.fromUserDto(userDto: UserDto) : User {
         lastName = userDto.lastName,
         email = userDto.email,
         phoneNumber = userDto.phoneNumber,
-        password = "")
+        password = userDto.password,
+    )
 }
 
 fun User.toUserDto() : UserDto = UserDto (
@@ -70,4 +73,5 @@ fun User.toUserDto() : UserDto = UserDto (
     lastName = lastName,
     email = email,
     phoneNumber = phoneNumber,
+    password = password,
 )

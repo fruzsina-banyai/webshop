@@ -5,28 +5,36 @@ import com.gocode.webshop.usermanagement.model.Address
 import com.gocode.webshop.usermanagement.model.User
 import com.gocode.webshop.usermanagement.repository.AddressRepository
 import com.gocode.webshop.usermanagement.repository.UserRepository
+import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.stereotype.Service
 import java.lang.IllegalArgumentException
 import java.util.*
 
+@Service
 class UserService (
     private val userRepository : UserRepository,
     private val addressRepository: AddressRepository,
+    private val passwordEncoder: PasswordEncoder
 ) {
-    fun findUserById(id: UUID) : User {
-        return userRepository.findById(id).orElseThrow { throw EntityNotFoundException(id.toString(), User::class.java) }
+    fun findUserById(userId: UUID) : User {
+        return userRepository.findById(userId).orElseThrow { throw EntityNotFoundException(userId.toString(), User::class.java) }
     }
 
     fun createUser(user: User): User {
-        return userRepository.save(user.copy(id = null))
+        return userRepository.save(user.copy(
+            id = null,
+            password = passwordEncoder.encode(user.password)
+        ))
     }
 
-    fun deleteUser(id: UUID) {
-        val user = userRepository.findById(id).orElseThrow { throw EntityNotFoundException(id.toString(), User::class.java) }
+    fun deleteUser(userId: UUID) {
+        val user = userRepository.findById(userId).orElseThrow { throw EntityNotFoundException(userId.toString(), User::class.java) }
         userRepository.save(user.copy(
             firstName = "deleted",
             lastName = "deleted",
             email = "deleted",
-            phoneNumber = "deleted"
+            phoneNumber = "deleted",
+            password = "deleted"
         ))
     }
 
@@ -44,11 +52,19 @@ class UserService (
         ))
     }
 
+    fun changePassword(userId: UUID, password: String): User {
+        val originalUser = findUserById(userId)
+        return userRepository.save(originalUser.copy(
+            password = passwordEncoder.encode(password)
+        ))
+    }
+
     fun findAllUsers(): List<User> {
         return userRepository.findAll()
     }
 
-    fun getAddresses(id: UUID): List<Address> {
-        return addressRepository.findByUserId(id).takeIf { it.isNotEmpty() } ?: throw EntityNotFoundException(id.toString(), User::class.java)
+    fun getAddresses(userId: UUID): List<Address> {
+        return addressRepository.findByUserId(userId).takeIf { it.isNotEmpty() } ?: throw EntityNotFoundException(userId.toString(), User::class.java)
     }
+
 }

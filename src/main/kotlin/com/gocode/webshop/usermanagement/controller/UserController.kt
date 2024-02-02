@@ -1,6 +1,7 @@
 package com.gocode.webshop.usermanagement.controller
 
 import com.gocode.webshop.usermanagement.dto.AddressDto
+import com.gocode.webshop.usermanagement.dto.PasswordChangeDto
 import com.gocode.webshop.usermanagement.dto.UserDto
 import com.gocode.webshop.usermanagement.model.User
 import com.gocode.webshop.usermanagement.model.fromUserDto
@@ -44,6 +45,12 @@ class UserController(
         return ResponseEntity
             .ok()
             .body(userService.updateUser(User.fromUserDto(userDto)).toUserDto())
+    }
+
+    fun changePassword(userId: UUID, passwordChangeDto: PasswordChangeDto): ResponseEntity<UserDto> {
+        return ResponseEntity
+            .ok()
+            .body(userService.changePassword(userId, passwordChangeDto.password).toUserDto())
     }
 
     fun findAllUsers(): ResponseEntity<List<UserDto>> {

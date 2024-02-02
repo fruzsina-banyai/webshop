@@ -9,11 +9,11 @@ COPY ./build /app
 
 # Set the application port
 ENV PORT=8080
-ENV GL_UMS_DB_HOST=localhost
-ENV GL_UMS_DB_NAME=user_management
-ENV GL_UMS_DB_PASSWORD=postgres
-ENV GL_UMS_DB_PORT=5432
-ENV GL_UMS_DB_USER_NAME=postgres
+ENV UMS_DB_HOST=localhost
+ENV UMS_DB_NAME=user_management
+ENV UMS_DB_PASSWORD=postgres
+ENV UMS_DB_PORT=5432
+ENV UMS_DB_USER_NAME=postgres
 
 # Expose the application port
 EXPOSE $PORT

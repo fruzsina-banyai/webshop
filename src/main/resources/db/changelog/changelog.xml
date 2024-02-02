@@ -11,22 +11,22 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="role" type="string">
+            <column name="role" type="varchar(25)">
                 <constraints nullable="false"/>
             </column>
-            <column name="first_name" type="string">
+            <column name="first_name" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
-            <column name="last_name" type="string">
+            <column name="last_name" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
-            <column name="email" type="string">
+            <column name="email" type="varchar(50)">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column name="phone_number" type="string">
+            <column name="phone_number" type="varchar(25)">
                 <constraints nullable="false"/>
             </column>
-            <column name="password" type="string">
+            <column name="password" type="varchar(250)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -40,19 +40,19 @@
             <column name="user_id" type="uuid">
                 <constraints nullable="false"/>
             </column>
-            <column name="country" type="string">
+            <column name="country" type="varchar(25)">
                 <constraints nullable="false"/>
             </column>
-            <column name="state" type="string">
+            <column name="state" type="varchar(25)">
                 <constraints nullable="false"/>
             </column>
-            <column name="zip_code" type="string">
+            <column name="zip_code" type="varchar(25)">
                 <constraints nullable="false"/>
             </column>
-            <column name="city" type="string">
+            <column name="city" type="varchar(25)">
                 <constraints nullable="false"/>
             </column>
-            <column name="street_address" type="string">
+            <column name="street_address" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
         </createTable>

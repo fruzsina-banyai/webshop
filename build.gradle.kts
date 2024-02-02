@@ -29,6 +29,12 @@ dependencies {
 	implementation("org.liquibase:liquibase-core")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
+	testImplementation("org.testcontainers:testcontainers")
+	testImplementation("org.testcontainers:junit-jupiter")
+	testImplementation("org.testcontainers:postgresql")
+	testImplementation("io.rest-assured:rest-assured")
+	testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.1")
+	testImplementation("org.junit.jupiter:junit-jupiter-engine:5.10.1")
 }
 
 tasks.withType<KotlinCompile> {

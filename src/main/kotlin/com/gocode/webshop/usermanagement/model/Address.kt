@@ -3,6 +3,7 @@ package com.gocode.webshop.usermanagement.model
 import com.gocode.webshop.usermanagement.dto.AddressDto
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.hibernate.Hibernate
@@ -12,6 +13,7 @@ import java.util.UUID
 @Table(name = "address")
 data class Address (
     @Id
+    @GeneratedValue
     @Column(name = "id", unique = true, nullable = false, updatable = false)
     val id: UUID?,
 

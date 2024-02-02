@@ -41,6 +41,6 @@ class AddressController(
     fun findAllAddresses(): ResponseEntity<List<AddressDto>> {
         return ResponseEntity
             .ok()
-            .body(addressService.findAllAdresses().map { it.toAddressDto() }.toList())
+            .body(addressService.findAllAddresses().map { it.toAddressDto() }.toList())
     }
 }

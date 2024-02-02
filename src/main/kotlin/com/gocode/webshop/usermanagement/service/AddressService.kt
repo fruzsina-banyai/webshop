@@ -3,9 +3,11 @@ package com.gocode.webshop.usermanagement.service
 import com.gocode.webshop.usermanagement.errors.EntityNotFoundException
 import com.gocode.webshop.usermanagement.model.Address
 import com.gocode.webshop.usermanagement.repository.AddressRepository
+import org.springframework.stereotype.Service
 import java.lang.IllegalArgumentException
 import java.util.UUID
 
+@Service
 class AddressService (
     private val addressRepository : AddressRepository
 ) {
@@ -35,7 +37,7 @@ class AddressService (
         ))
     }
 
-    fun findAllAdresses(): List<Address> {
+    fun findAllAddresses(): List<Address> {
         return addressRepository.findAll()
     }
 
