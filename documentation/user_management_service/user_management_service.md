@@ -5,9 +5,6 @@
 ```mermaid
 erDiagram
     USER ||--o{ ADDRESS : has
-    USER }o--|{ USER_GROUP : "is assigned to"
-    USER_GROUP }o--o{ USER_ROLE : "is assigned to"
-    USER_ROLE }o--|{ PERMISSION : has
 ```
 
 ## Package relations
@@ -24,11 +21,9 @@ flowchart LR
 ```mermaid
 classDiagram
     User "1" *-- "0..*" Address
-    User "1..*" --o "0..*" UserGroup
-    UserGroup "0..*" o-- "0..*" UserRole
-    UserRole "0..*" o-- "0..*" Permission
     class User {
-        -userId : String
+        -userId : UUID
+        -role: String
         -firstName : String
         -lastName : String
         -email : String
@@ -36,27 +31,13 @@ classDiagram
         -password : String
     }
     class Address {
-        -addressId : String
+        -addressId : UUID
+        -userId: UUID
         -country : String
         -state : String
         -zipCode : String
         -city : String
-        -streetAdress : String
-    }
-    class UserGroup {
-        -groupId : String
-        -groupName : String
-        -groupDescription : String
-    }
-    class UserRole {
-        -roleId : String
-        -roleName : String
-        -roleDescription : String
-    }
-    class Permission {
-        -permissionId : String
-        -permissionName : String
-        -permissionDescription : String
+        -streetAdress : String     
     }
 
 ```
@@ -65,123 +46,58 @@ classDiagram
 
 ```mermaid
 classDiagram
-    class PermissionRepository {        
-    }
-    class UserRoleRepository {        
-    }
-    class UserGroupRepository {        
-    }
     class UserRepository {      
     }
-    class AddressRepository {        
+    class AddressRepository {
+        +findByUserId(userId) List "Address"       
     }
 ```
 
 ### Service package
 ```mermaid
 classDiagram
-    class PermissionService {        
-        -permissionRepository : PermissionRepository
-        +createPermission() Permisson
-        +deletePermission() 
-        +updatePermission() Permission
-        +findPermissionById() Permission
-    }
-    class UserRoleService {     
-        -userRoleRepository : UserRoleRepository  
-        -permissionRepository : PermissionRepository
-        +createRole() UserRole
-        +deleteRole() 
-        +updateRole() UserRole
-        +findRoleById() UserRole
-        +getPermissions() List<'Permission'>
-        +addPermissions() List<'Permission'>
-        +removePermissions()
-    }
-    class UserGroupService {      
-        -userGroupRepository : UserGroupRepository  
-        -userRoleRepository : UserRoleRepository
-        -userRepository : UserRepository
-        +createGroup() UserGroup
-        +deleteGroup()
-        +updateGroup() UserGroup
-        +findGroupById() UserGroup
-        +getMembers() List<'User'>
-        +addMembers() List<'User'>
-        +removeMembers()
-        +getRoles() List<'UserRole'>
-        +addRoles() List<'UserRole'>
-        +removeRoles()
-    }
     class UserService {      
         -userRepository : UserRepository
         -addressRepository : AddressRepository
-        +createUser() User
-        +deleteUser()
-        +updateUser() User
-        +findUserById() User
-        +getAddresses() List<'Address'>
-        +addAddresses() List<'Address'>
-        +removeAddresses()
+        -passwordEncoder: passwordEncoder
+        +createUser(user: User) User
+        +deleteUser(userId: UUID)
+        +updateUser(user: User) User
+        +changePassword(userId: UUID, password: String) User
+        +findUserById(userId: UUID) User
+        +getAddresses() List "Address"
+        +findAllUsers() List "User"
     }
     class AddressService { 
         -addressRepository : AddressRepository
-        +createAddress() Address
-        +deleteAddress()
-        +updateAddress() Address
-        +findAddressById() Address
+        +createAddress(address: Address) Address
+        +deleteAddress(id: UUID)
+        +updateAddress(address: Address) Address
+        +findAddressById(id: UUID) Address
+        +findAllAddresses() List "Address"
     }
 ```
 
 ### Controller package
 ```mermaid
 classDiagram
-    class PermissionController {        
-        -permissionService : PermissionService
-        +createPermission() ResponseEntity
-        +deletePermission() ResponseEntity
-        +updatePermission() ResponseEntity
-        +findPermissionById() ResponseEntity
-    }
-    class UserRoleController {     
-        -userRoleService : UserRoleService
-        +createRole() ResponseEntity
-        +deleteRole() ResponseEntity
-        +updateRole() ResponseEntity
-        +findRoleById() ResponseEntity
-        +getPermissions() ResponseEntity
-        +addPermissions() ResponseEntity
-        +removePermissions() ResponseEntity
-    }
-    class UserGroupController {      
-        -userGroupService : UserGroupService
-        +createGroup() ResponseEntity
-        +deleteGroup() ResponseEntity
-        +updateGroup() ResponseEntity
-        +findGroupById() ResponseEntity
-        +getMembers() ResponseEntity
-        +addMembers() ResponseEntity
-        +removeMembers() ResponseEntity
-        +getRoles() ResponseEntity
-        +addRoles() ResponseEntity
-        +removeRoles() ResponseEntity
-    }
     class UserController {      
         -userService : UserService
-        +createUser() ResponseEntity
-        +deleteUser() ResponseEntity
-        +updateUser() ResponseEntity
-        +findUserById() ResponseEntity
-        +getAddresses() ResponseEntity
-        +addAddresses() ResponseEntity
-        +removeAddresses() ResponseEntity
+        +createUser(userDto: UserDto) ResponseEntity "UserDto"
+        +deleteUser(userId: UUID) ResponseEntity "Unit"
+        +updateUser(userDto: UserDto) ResponseEntity "UserDto"
+        +changePassword(userId: UUID, passwordChangeDto: PasswordChangeDto) ResponseEntity "UserDto"
+        +findUserById(userId: UUID) ResponseEntity "UserDto"
+        +getAddresses() ResponseEntity "List "Address""
+        +findAllUsers() ResponseEntity "List "User""
     }
     class AddressController { 
         -addressService : AddressService
-        +createAddress() ResponseEntity
-        +deleteAddress() ResponseEntity
-        +updateAddress() ResponseEntity
-        +findAddressById() ResponseEntity
+        +createAddress(addressDto: AddressDto) ResponseEntity "AddressDto"
+        +deleteAddress(addressId: UUID) ResponseEntity "Unit"
+        +updateAddress(addressDto: AddressDto) ResponseEntity "AddressDto"
+        +findAddressById(addressId: UUID) ResponseEntity "AddressDto"
+        +findAllAddresses() ResponseEntity "List "AddressDto""
     }
 ```
 
