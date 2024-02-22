@@ -10,7 +10,7 @@ The primary aim of the website is to establish a user-friendly and secure online
 ### [User Management Service](https://github.com/fruzsina-banyai/webshop/blob/main/documentation/user_management_service/user_management_service.md)
 As a user, I aim to monitor my orders and revisit information about my previous purchases. Achieving this involves establishing a user management service.
 
-### Product Catalog
+### [Product Catalog](https://github.com/fruzsina-banyai/webshop/blob/main/documentation/product_catalog/product_catalog.md)
 For users, navigating the product catalog is an essential feature. Effortlessly locate products by category, price range, or relevant criteria, ensuring a user-friendly and efficient shopping process. On the administrative side, the ability to modify, organize, and customize the product range provides control and flexibility, presenting a dynamic and appealing catalog.
 
 ### Shopping Cart
