@@ -1,7 +1,9 @@
 package com.gocode.webshop.usermanagement.service
 
 import com.gocode.webshop.usermanagement.errors.EntityNotFoundException
+import com.gocode.webshop.usermanagement.model.Address
 import com.gocode.webshop.usermanagement.model.User
+import org.assertj.core.api.CollectionAssert.assertThatCollection
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -33,11 +35,24 @@ private const val UPDATED_PHONE_NUMBER = "updatedPhoneNumber"
 
 private const val UPDATED_PASSWORD = "updatedPassword"
 
+private const val ANY_COUNTRY = "country"
+
+private const val ANY_STATE = "state"
+
+private const val ANY_ZIP_CODE = "zipcode"
+
+private const val ANY_CITY = "city"
+
+private const val ANY_STREET_ADDRESS = "streetAddress"
+
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class UserServiceIT {
     @Autowired
     lateinit var userService: UserService
+
+    @Autowired
+    lateinit var addressService: AddressService
 
     @Autowired
     lateinit var passwordEncoder: PasswordEncoder
@@ -129,7 +144,32 @@ class UserServiceIT {
         assertTrue(passwordEncoder.matches(UPDATED_PASSWORD, dbUser.password))
     }
 
+    @Test
+    fun `should return addresses`() {
+        val user = createUser()
+        val createdUser = userService.createUser(user)
 
+        val address = createAddress(createdUser.id!!)
+        val createdAddress = addressService.createAddress(address)
+
+        val result = userService.getAddresses(createdUser.id!!)
+
+        assertThatCollection(result)
+            .extracting("id")
+            .containsExactlyInAnyOrder(createdAddress.id)
+    }
+
+    @Test
+    fun `should throw error on given user not having any addresses`() {
+        val user = createUser()
+        val createdUser = userService.createUser(user)
+
+        val address = createAddress(createdUser.id!!)
+        addressService.createAddress(address)
+
+        assertThrows<EntityNotFoundException> { userService.getAddresses(user.id!!)
+        }
+    }
 
     companion object {
         fun createUser(): User {
@@ -146,6 +186,19 @@ class UserServiceIT {
 
         fun generateRandomEmail(): String {
             return "${UUID.randomUUID()}@email.com"
+        }
+
+        fun createAddress(userId: UUID): Address {
+            return Address(
+                id = UUID.randomUUID(),
+                userId = userId,
+                country = ANY_COUNTRY,
+                state = ANY_STATE,
+                zipCode = ANY_ZIP_CODE,
+                city = ANY_CITY,
+                streetAddress = ANY_STREET_ADDRESS
+
+            )
         }
     }
 }

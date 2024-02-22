@@ -3,8 +3,8 @@ package com.gocode.webshop.usermanagement.service
 import com.gocode.webshop.usermanagement.errors.EntityNotFoundException
 import com.gocode.webshop.usermanagement.model.Address
 import com.gocode.webshop.usermanagement.model.User
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
@@ -59,7 +59,7 @@ class AddressServiceIT {
         val createdAddress = addressService.createAddress(address)
         val dbAddress = addressService.findAddressById(createdAddress.id!!)
 
-        Assertions.assertNotNull(createdAddress.id)
+        assertNotNull(createdAddress.id)
         assertEquals(createdAddress.id, dbAddress.id)
     }
 
@@ -71,7 +71,7 @@ class AddressServiceIT {
         val createdAddress = addressService.createAddress(address)
         val dbAddress = addressService.findAddressById(createdAddress.id!!)
 
-        Assertions.assertNotNull(createdAddress.id)
+        assertNotNull(createdAddress.id)
         assertEquals(createdAddress.id, dbAddress.id)
     }
 
