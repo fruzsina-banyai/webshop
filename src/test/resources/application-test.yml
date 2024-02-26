@@ -1,0 +1,5 @@
+spring:
+  liquibase:
+    change-log: classpath:db/changelog/changelog.xml
+  datasource:
+    url: jdbc:tc:postgresql:16.1:///webshop_test_db
