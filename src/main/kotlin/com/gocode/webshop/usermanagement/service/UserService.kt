@@ -64,7 +64,11 @@ class UserService (
     }
 
     fun getAddresses(userId: UUID): List<Address> {
-        return addressRepository.findByUserId(userId).takeIf { it.isNotEmpty() } ?: throw EntityNotFoundException(userId.toString(), User::class.java)
+        if ( userRepository.existsById(userId) ) {
+            return addressRepository.findByUserId(userId)
+        } else {
+            throw EntityNotFoundException(userId.toString(), User::class.java)
+        }
     }
 
 }

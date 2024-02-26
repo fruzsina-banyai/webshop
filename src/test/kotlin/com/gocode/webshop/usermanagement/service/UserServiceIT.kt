@@ -160,7 +160,15 @@ class UserServiceIT {
     }
 
     @Test
-    fun `should throw error on given user not having any addresses`() {
+    fun `should return empty list if given user does not have any addresses`() {
+        val user = createUser()
+        val createdUser = userService.createUser(user)
+
+        assertTrue(userService.getAddresses(createdUser.id!!).isEmpty())
+    }
+
+    @Test
+    fun `should throw error on non existent user`() {
         val user = createUser()
         val createdUser = userService.createUser(user)
 
