@@ -1,4 +1,4 @@
-package com.gocode.webshop.usermanagement.errors
+package com.gocode.webshop.errors
 
 import org.springframework.http.HttpStatus
 

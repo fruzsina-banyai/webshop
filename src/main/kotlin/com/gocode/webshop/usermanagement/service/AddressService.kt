@@ -1,11 +1,13 @@
 package com.gocode.webshop.usermanagement.service
 
-import com.gocode.webshop.usermanagement.errors.EntityNotFoundException
+import com.gocode.webshop.errors.EntityNotFoundException
 import com.gocode.webshop.usermanagement.model.Address
 import com.gocode.webshop.usermanagement.repository.AddressRepository
 import org.springframework.stereotype.Service
 import java.lang.IllegalArgumentException
 import java.util.UUID
+
+private const val DELETED = "deleted"
 
 @Service
 class AddressService (
@@ -19,8 +21,12 @@ class AddressService (
         return addressRepository.save(address.copy(id=null))
     }
 
-    fun deleteAddress(id: UUID) {
-        addressRepository.deleteById(id)
+    fun deleteAddress(id: UUID) : Address {
+        val address = findAddressById(id)
+        return addressRepository.save(address.copy(
+            streetAddress = DELETED + id,
+            deleted = true,
+        ))
     }
 
     fun updateAddress(address: Address) : Address {

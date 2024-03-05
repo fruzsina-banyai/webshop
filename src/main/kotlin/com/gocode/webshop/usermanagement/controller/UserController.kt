@@ -24,20 +24,14 @@ class UserController(
             .body(userService.findUserById(userId).toUserDto())
     }
 
-    fun findAddressesByUserId(userId: UUID): ResponseEntity<List<AddressDto>> {
-        return ResponseEntity
-            .ok()
-            .body(userService.getAddresses(userId).map { it.toAddressDto() }.toList())
-    }
-
     fun createUser(userDto: UserDto): ResponseEntity<UserDto> {
         return ResponseEntity
             .ok()
             .body(userService.createUser(User.fromUserDto(userDto)).toUserDto())
     }
 
-    fun deleteUser(id: UUID): ResponseEntity<Unit> {
-        userService.deleteUser(id)
+    fun deleteUser(userId: UUID): ResponseEntity<Unit> {
+        userService.deleteUser(userId)
         return ResponseEntity.ok().build()
     }
 
@@ -47,10 +41,21 @@ class UserController(
             .body(userService.updateUser(User.fromUserDto(userDto)).toUserDto())
     }
 
-    fun changePassword(userId: UUID, passwordChangeDto: PasswordChangeDto): ResponseEntity<UserDto> {
+    fun changePassword(passwordChangeDto: PasswordChangeDto): ResponseEntity<UserDto> {
         return ResponseEntity
             .ok()
-            .body(userService.changePassword(userId, passwordChangeDto.password).toUserDto())
+            .body(userService.changePassword(passwordChangeDto.userId, passwordChangeDto.password).toUserDto())
+    }
+
+    fun getAddresses(userId: UUID): ResponseEntity<List<AddressDto>> {
+        return ResponseEntity
+            .ok()
+            .body(userService.getAddresses(userId).map { it.toAddressDto() }.toList())
+    }
+
+    fun deleteAddresses(userId: UUID): ResponseEntity<Unit> {
+        userService.deleteAddresses(userId)
+        return ResponseEntity.ok().build()
     }
 
     fun findAllUsers(): ResponseEntity<List<UserDto>> {

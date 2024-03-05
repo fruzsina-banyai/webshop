@@ -1,10 +1,9 @@
 package com.gocode.webshop.usermanagement.service
 
-import com.gocode.webshop.usermanagement.errors.EntityNotFoundException
+import com.gocode.webshop.errors.EntityNotFoundException
 import com.gocode.webshop.usermanagement.model.Address
 import com.gocode.webshop.usermanagement.model.User
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
@@ -42,6 +41,8 @@ private const val UPDATED_CITY = "updatedCity"
 
 private const val UPDATED_STREET_ADDRESS = "updatedStreetAddress"
 
+private const val DELETED = "deleted"
+
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AddressServiceIT {
@@ -64,7 +65,7 @@ class AddressServiceIT {
     }
 
     @Test
-    fun `should save user with any id`() {
+    fun `should save address with any id`() {
         val user = userService.createUser(createUser())
         val address = createAddress(user.id!!)
 
@@ -93,6 +94,7 @@ class AddressServiceIT {
         val updatedAddress = createAddress(user.id!!).copy(
             id = createdAddress.id,
             userId = UUID.randomUUID(),
+            deleted = true,
             country = UPDATED_COUNTRY,
             state = UPDATED_STATE,
             zipCode = UPDATED_ZIP_CODE,
@@ -105,6 +107,7 @@ class AddressServiceIT {
 
         assertEquals(createdAddress.id, dbAddress.id)
         assertEquals(createdAddress.userId, dbAddress.userId)
+        assertEquals(createdAddress.deleted, dbAddress.deleted)
         assertEquals(updatedAddress.country, dbAddress.country)
         assertEquals(updatedAddress.state, dbAddress.state)
         assertEquals(updatedAddress.zipCode, dbAddress.zipCode)
@@ -113,14 +116,17 @@ class AddressServiceIT {
     }
 
     @Test
-    fun `should delete address`() {
+    fun `should correctly change fields on delete`() {
         val user = userService.createUser(createUser())
         val address = createAddress(user.id!!)
 
         val createdAddress = addressService.createAddress(address)
         addressService.deleteAddress(createdAddress.id!!)
 
-        assertThrows<EntityNotFoundException> { addressService.findAddressById(createdAddress.id!!) }
+        val dbAddress = addressService.findAddressById(createdAddress.id!!)
+
+        assertTrue(dbAddress.deleted)
+        assertEquals(DELETED + createdAddress.id, dbAddress.streetAddress)
     }
 
     companion object{
@@ -128,6 +134,7 @@ class AddressServiceIT {
             return Address(
                 id = UUID.randomUUID(),
                 userId = userId,
+                deleted = false,
                 country = ANY_COUNTRY,
                 state = ANY_STATE,
                 zipCode = ANY_ZIP_CODE,
@@ -141,6 +148,7 @@ class AddressServiceIT {
             return User(
                 id = UUID.randomUUID(),
                 role = ANY_ROLE,
+                deleted = false,
                 firstName = ANY_FIRST_NAME,
                 lastName = ANY_LAST_NAME,
                 email = UserServiceIT.generateRandomEmail(),
