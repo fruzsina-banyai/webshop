@@ -20,7 +20,7 @@ flowchart LR
 classDiagram
   Product "0..*" <-- "0..*" Category
   class Product {
-    -id : UUID
+    -productId : UUID
     -categoryId : UUID
     -name : String
     -active : Boolean
@@ -29,7 +29,7 @@ classDiagram
     -inStock : Double
   }
   class Category {
-    -id : UUID
+    -categoryId : UUID
     -name : String
     -active : Boolean
     -description : String
