@@ -76,7 +76,7 @@ classDiagram
         +createAddress(address: Address) Address
         +deleteAddress(addressId: UUID) Address
         +updateAddress(address: Address) Address
-        +findAddressById(id: UUID) Address
+        +findAddressById(addressId: UUID) Address
         +findAllAddresses() List "Address"
     }
 ```
