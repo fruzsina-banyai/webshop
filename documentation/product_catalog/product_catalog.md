@@ -23,13 +23,15 @@ classDiagram
     -productId : UUID
     -categoryId : UUID
     -name : String
+    -active : Boolean
     -description : String
-    -price : int
-    -inStock : int
+    -price : Double
+    -inStock : Double
   }
   class Category {
     -categoryId : UUID
     -name : String
+    -active : Boolean
     -description : String
     -parentId : UUID
   }
@@ -49,10 +51,15 @@ classDiagram
 ```mermaid
 classDiagram
   class ProductService {
-    -productRerpository : ProductRepository
+    -productRepository : ProductRepository
+    -categoryRepository : CategoryRepository
     +createProduct(product: Product) Product
-    +deleteProduct(productId: UUID)
+    +deactivateProduct(productId: UUID) Product
+    +activateProduct(productId: UUID) Product
+    +categorizeProduct(productId: UUID, categoryId: UUID) Product
+    +uncategorizeProduct(productId: UUID) Product
     +updateProduct(product: Product) Product
+    +updateProductStock(productId: Product, stock: Double) Product 
     +findProductById(productId: UUID) Product
     +findAllProduct() List "Product" 
   }
@@ -60,10 +67,15 @@ classDiagram
     -categoryRepository : CategoryRepository
     -productRepository : ProductRepository
     +createCategory(category: Category) Category
+    +deactivateCategory(categoryId: UUID) Category
+    +activateCategory(categoryId: UUID) Category
     +deleteCategory(categoryId: UUID)
     +updateCategory(category: Category) Category
+    +assignParentToCategory(categoryId: UUID, parentId: UUID) Category
+    +removeParentFromCategory(categoryId: UUID) Category
     +findCategoryById(categoryId: UUID) Category
     +getProducts(categoryId: UUID) List "Product"
+    +removeProducts(categoryId: UUID)
     +findAllCategory() List "Category" 
   }
 ```
@@ -74,18 +86,27 @@ classDiagram
   class ProductController {
     -productService : ProductService
     +createProduct(productDto: ProductDto) ResponseEntity "ProductDto"
-    +deleteProduct(productId: UUID) ResponseEntity "Unit"
+    +deactivateProduct(productId: UUID) ResponseEntity "ProductDto"
+    +activateProduct(productId: UUID) ResponseEntity "ProductDto"
+    +categorizeProduct(categorizeProductDto: categorizeProductDto) ResponseEntity "ProductDto"
+    +uncategorizeProduct(productId: UUID) ResponseEntity "ProductDto"
     +updateProduct(productDto: ProductDto) ResponseEntity "ProductDto"
+    +updateProductStock(updateProductStockDto: UpdateProductStockDto) ResponseEntity "ProductDto"
     +findProductById(productId: UUID) ResponseEntity "ProductDto"
     +findAllProduct() ResponseEntity "List "ProductDto"" 
   }
   class CategoryController {
     -categoryService : CategoryService
     +createCategory(categoryDto: CategoryDto) ResponseEntity "CategoryDto"
+    +deactivateCategory(categoryId: UUID) ResponseEntity "CategoryDto"
+    +activateCategory(categoryId: UUID) ResponseEntity "CategoryDto"
     +deleteCategory(categoryId: UUID) ResponseEntity "Unit"
     +updateCategory(categoryDto: CategoryDto) ResponseEntity "CategoryDto"
+    +assignParentToCategory(assignParentToCategoryDto: AssignParentToCategoryDto) ResponseEntity"CategoryDto"
+    +removeParentFromCategory(removeParentFromCategoryDto: RemoveParentFromCategoryDto) ResponseEntity"CategoryDto"
     +findCategoryById(categoryId: UUID) ResponseEntity "CategoryDto"
     +getProducts(categoryId: UUID) ResponseEntity "List "ProductDto""
+    +removeProducts(categoryId: UUID) ResponseEntity"Unit"
     +findAllCategory() ResponseEntity "List "CategoryDto"" 
   }
 ```
