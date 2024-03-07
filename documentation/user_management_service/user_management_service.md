@@ -24,6 +24,7 @@ classDiagram
     class User {
         -userId : UUID
         -role: String
+        -deleted: Boolean
         -firstName : String
         -lastName : String
         -email : String
@@ -33,6 +34,7 @@ classDiagram
     class Address {
         -addressId : UUID
         -userId: UUID
+        -deleted: Boolean
         -country : String
         -state : String
         -zipCode : String
@@ -61,17 +63,18 @@ classDiagram
         -addressRepository : AddressRepository
         -passwordEncoder: passwordEncoder
         +createUser(user: User) User
-        +deleteUser(userId: UUID)
+        +deleteUser(userId: UUID) User
         +updateUser(user: User) User
         +changePassword(userId: UUID, password: String) User
         +findUserById(userId: UUID) User
-        +getAddresses() List "Address"
+        +getAddresses(userId: UUID) List "Address"
+        +deleteAddresses(userId: UUID)
         +findAllUsers() List "User"
     }
     class AddressService { 
         -addressRepository : AddressRepository
         +createAddress(address: Address) Address
-        +deleteAddress(id: UUID)
+        +deleteAddress(addressId: UUID) Address
         +updateAddress(address: Address) Address
         +findAddressById(id: UUID) Address
         +findAllAddresses() List "Address"
@@ -84,17 +87,18 @@ classDiagram
     class UserController {      
         -userService : UserService
         +createUser(userDto: UserDto) ResponseEntity "UserDto"
-        +deleteUser(userId: UUID) ResponseEntity "Unit"
+        +deleteUser(userId: UUID) ResponseEntity "UserDto"
         +updateUser(userDto: UserDto) ResponseEntity "UserDto"
         +changePassword(userId: UUID, passwordChangeDto: PasswordChangeDto) ResponseEntity "UserDto"
         +findUserById(userId: UUID) ResponseEntity "UserDto"
-        +getAddresses() ResponseEntity "List "Address""
-        +findAllUsers() ResponseEntity "List "User""
+        +getAddresses(userId: UUID) ResponseEntity "List "AddressDto""
+        +deleteAddresses(userId: UUID) ResponseEntity "Unit"
+        +findAllUsers() ResponseEntity "List "UserDto""
     }
     class AddressController { 
         -addressService : AddressService
         +createAddress(addressDto: AddressDto) ResponseEntity "AddressDto"
-        +deleteAddress(addressId: UUID) ResponseEntity "Unit"
+        +deleteAddress(addressId: UUID) ResponseEntity "AddressDto"
         +updateAddress(addressDto: AddressDto) ResponseEntity "AddressDto"
         +findAddressById(addressId: UUID) ResponseEntity "AddressDto"
         +findAllAddresses() ResponseEntity "List "AddressDto""
