@@ -7,6 +7,7 @@ The shopping cart feature should not only collect various products chosen to be 
 ```mermaid
 erDiagram
   CART }o--o{ PRODUCT : contains
+  USER |o--|| CART : has
 ```
 
 ## Relations to other services
@@ -32,10 +33,45 @@ classDiagram
     -cartId : UUID
     -userId : UUID
     -productIds : List "UUID"
-    -price : Double
   }
 ```
 
+## Repository package
+```mermaid
+classDiagram
+  class CartRepository {
+    +findByUserId(userId: UUID) Cart
+  }
+```
 
+## Service package
+```mermaid
+classDiagram
+  class CartSerevice{
+    -userService : UserService
+    -productService : ProductService
+    +createCart(cart: Cart) Cart
+    +deleteCart(cartId: UUID)
+    +emptyCart(cartId: UUID) Cart
+    +findCartById(cartId: UUID) Cart
+    +getProducts(cartId: UUID) List "UUID"
+    +addProductsToCart(products: List "UUID") Cart
+    +removeProductsFromCart(products: List "UUID") Cart
+    +calculatePriceOfProducts(cartId: UUID) Double
+  }
+```
 
-
+## Controller package
+```mermaid
+classDiagram
+  class CartController{
+    -cartService : CartService
+    +createCart(cartDto: CartDto) ResponseEntity "CartDto"
+    +deleteCart(cartDto: CartDto) ResponseEntity "Unit"
+    +emptyCart(cartId: UUID) ResponseEntity "CartDto"
+    +findCartById(cartId: UUID) ResponseEntity "CartDto"
+    +addProductsToCart(products: List"UUID") ResponseEntity "CartDto"
+    +removeProductsFromCart(products: List"UUID") ResponseEntity "CartDto"
+    +calculatePriceOfProducts(cartId: UUID) ResponseEntity "Double"
+  }
+```
