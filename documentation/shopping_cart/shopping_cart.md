@@ -75,3 +75,17 @@ classDiagram
     +calculatePriceOfProducts(cartId: UUID) ResponseEntity "Double"
   }
 ```
+
+## User stories
+
+As a customer, I want to be able to add products to my shopping cart so that I can purchase them later.
+
+As a customer, I want to be able to view the contents of my shopping cart so that I can see what items I have selected.
+
+As a customer, I want to be able to remove products from my shopping cart so that I can change my selection before checking out.
+
+As a customer, I want to be able to clear my entire shopping cart so that I can start over with a new selection.
+
+As a customer, I want to be able to proceed to checkout from the shopping cart so that I can complete my purchase.
+
+As a registered customer, I want to be able to save my shopping cart for later so that I can return to it at another time.
