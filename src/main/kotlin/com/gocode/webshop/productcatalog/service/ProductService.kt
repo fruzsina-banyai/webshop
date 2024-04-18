@@ -2,9 +2,9 @@ package com.gocode.webshop.productcatalog.service
 
 import com.gocode.webshop.productcatalog.model.Category
 import com.gocode.webshop.productcatalog.model.Product
-import com.gocode.webshop.productcatalog.repository.CategoryRepository
 import com.gocode.webshop.productcatalog.repository.ProductRepository
 import com.gocode.webshop.errors.EntityNotFoundException
+import com.gocode.webshop.productcatalog.repository.CategoryRepository
 import org.springframework.stereotype.Service
 import java.lang.IllegalArgumentException
 import java.util.*
@@ -14,9 +14,13 @@ class ProductService(
     private val productRepository: ProductRepository,
     private val categoryRepository: CategoryRepository
 ) {
-    fun findProductById(id: UUID): Product {
-        return productRepository.findById(id)
-            .orElseThrow { throw EntityNotFoundException(id.toString(), Product::class.java) }
+    fun findProductById(productId: UUID): Product {
+        return productRepository.findById(productId)
+            .orElseThrow { throw EntityNotFoundException(productId.toString(), Product::class.java) }
+    }
+
+    fun findByCategoryId(categoryId: UUID): List<Product> {
+        return productRepository.findByCategoryId(categoryId)
     }
 
     fun createProduct(product: Product): Product {
@@ -44,6 +48,10 @@ class ProductService(
 
     fun uncategortizeProduct(productId: UUID): Product {
         val product = findProductById(productId)
+        return productRepository.save(product.copy(categoryId = null))
+    }
+
+    fun uncategortizeProduct(product: Product): Product {
         return productRepository.save(product.copy(categoryId = null))
     }
 

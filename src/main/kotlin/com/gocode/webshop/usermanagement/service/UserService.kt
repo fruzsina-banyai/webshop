@@ -1,21 +1,19 @@
 package com.gocode.webshop.usermanagement.service
 
 import com.gocode.webshop.errors.EntityNotFoundException
+import com.gocode.webshop.constants.DELETED
 import com.gocode.webshop.usermanagement.model.Address
 import com.gocode.webshop.usermanagement.model.User
-import com.gocode.webshop.usermanagement.repository.AddressRepository
 import com.gocode.webshop.usermanagement.repository.UserRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.lang.IllegalArgumentException
 import java.util.*
 
-private const val DELETED = "deleted"
-
 @Service
 class UserService(
     private val userRepository: UserRepository,
-    private val addressRepository: AddressRepository,
+    private val addressService: AddressService,
     private val passwordEncoder: PasswordEncoder
 ) {
     fun findUserById(userId: UUID): User {
@@ -73,13 +71,9 @@ class UserService(
         )
     }
 
-    fun findAllUsers(): List<User> {
-        return userRepository.findAll()
-    }
-
     fun getAddresses(userId: UUID): List<Address> {
         if (userRepository.existsById(userId)) {
-            return addressRepository.findByUserId(userId)
+            return addressService.findByUserId(userId)
         } else {
             throw EntityNotFoundException(userId.toString(), User::class.java)
         }
@@ -88,13 +82,14 @@ class UserService(
     fun deleteAddresses(userId: UUID) {
         if (userRepository.existsById(userId)) {
             val addresses = getAddresses(userId)
-            addresses.map { addressRepository.save(it.copy(
-                streetAddress = DELETED + it.id,
-                deleted = true
-            )) }
+            addresses.map { addressService.deleteAddress(it) }
         } else {
             throw EntityNotFoundException(userId.toString(), User::class.java)
         }
+    }
+
+    fun findAllUsers(): List<User> {
+        return userRepository.findAll()
     }
 
 }

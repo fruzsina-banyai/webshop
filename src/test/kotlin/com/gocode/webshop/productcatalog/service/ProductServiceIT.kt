@@ -123,11 +123,38 @@ class ProductServiceIT {
     }
 
     @Test
-    fun `should uncategorize product with null category id`() {
+    fun `should uncategorize product with null category id given product id`() {
         val product = createProduct()
         val createdProduct = productService.createProduct(product)
 
         productService.uncategortizeProduct(createdProduct.id!!)
+
+        val dbProduct = productService.findProductById(createdProduct.id!!)
+
+        assertNull(dbProduct.categoryId)
+    }
+
+    @Test
+    fun `should uncategorize product with any category id given product id`() {
+        val product = createProduct()
+        val createdProduct = productService.createProduct(product)
+
+        val category = createCategory()
+        val createdCategory = categoryService.createCategory(category)
+
+        productService.categorizeProduct(createdProduct.id!!, createdCategory.id!!)
+
+        val dbProduct = productService.uncategortizeProduct(createdProduct.id!!)
+
+        assertNull(dbProduct.categoryId)
+    }
+
+    @Test
+    fun `should uncategorize product with null category id`() {
+        val product = createProduct()
+        val createdProduct = productService.createProduct(product)
+
+        productService.uncategortizeProduct(createdProduct)
 
         val dbProduct = productService.findProductById(createdProduct.id!!)
 
@@ -144,7 +171,7 @@ class ProductServiceIT {
 
         productService.categorizeProduct(createdProduct.id!!, createdCategory.id!!)
 
-        val dbProduct = productService.uncategortizeProduct(createdProduct.id!!)
+        val dbProduct = productService.uncategortizeProduct(createdProduct)
 
         assertNull(dbProduct.categoryId)
     }

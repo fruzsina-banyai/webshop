@@ -116,12 +116,26 @@ class AddressServiceIT {
     }
 
     @Test
-    fun `should correctly change fields on delete`() {
+    fun `should correctly change fields on delete given address id`() {
         val user = userService.createUser(createUser())
         val address = createAddress(user.id!!)
 
         val createdAddress = addressService.createAddress(address)
         addressService.deleteAddress(createdAddress.id!!)
+
+        val dbAddress = addressService.findAddressById(createdAddress.id!!)
+
+        assertTrue(dbAddress.deleted)
+        assertEquals(DELETED + createdAddress.id, dbAddress.streetAddress)
+    }
+
+    @Test
+    fun `should correctly change fields on delete`() {
+        val user = userService.createUser(createUser())
+        val address = createAddress(user.id!!)
+
+        val createdAddress = addressService.createAddress(address)
+        addressService.deleteAddress(createdAddress)
 
         val dbAddress = addressService.findAddressById(createdAddress.id!!)
 

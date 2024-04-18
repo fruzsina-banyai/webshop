@@ -1,30 +1,40 @@
 package com.gocode.webshop.usermanagement.service
 
 import com.gocode.webshop.errors.EntityNotFoundException
+import com.gocode.webshop.constants.DELETED
 import com.gocode.webshop.usermanagement.model.Address
 import com.gocode.webshop.usermanagement.repository.AddressRepository
 import org.springframework.stereotype.Service
 import java.lang.IllegalArgumentException
 import java.util.UUID
 
-private const val DELETED = "deleted"
-
 @Service
 class AddressService (
     private val addressRepository : AddressRepository
 ) {
-    fun findAddressById(id: UUID) : Address {
-        return addressRepository.findById(id).orElseThrow { throw EntityNotFoundException(id.toString(), Address::class.java) }
+    fun findAddressById(addressId: UUID) : Address {
+        return addressRepository.findById(addressId).orElseThrow { throw EntityNotFoundException(addressId.toString(), Address::class.java) }
+    }
+
+    fun findByUserId(userId: UUID) : List<Address> {
+        return addressRepository.findByUserId(userId)
     }
 
     fun createAddress(address: Address) : Address {
         return addressRepository.save(address.copy(id=null))
     }
 
-    fun deleteAddress(id: UUID) : Address {
-        val address = findAddressById(id)
+    fun deleteAddress(addressId: UUID) : Address {
+        val address = findAddressById(addressId)
         return addressRepository.save(address.copy(
-            streetAddress = DELETED + id,
+            streetAddress = DELETED + addressId,
+            deleted = true,
+        ))
+    }
+
+    fun deleteAddress(address: Address) : Address {
+        return addressRepository.save(address.copy(
+            streetAddress = DELETED + address.id,
             deleted = true,
         ))
     }
