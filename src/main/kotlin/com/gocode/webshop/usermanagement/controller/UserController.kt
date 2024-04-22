@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
@@ -31,7 +32,7 @@ class UserController(
     }
 
     @PostMapping
-    fun createUser(userDto: UserDto): ResponseEntity<UserDto> {
+    fun createUser(@RequestBody userDto: UserDto): ResponseEntity<UserDto> {
         return ResponseEntity
             .ok()
             .body(userService.createUser(User.fromUserDto(userDto)).toUserDto())
@@ -45,14 +46,14 @@ class UserController(
     }
 
     @PutMapping
-    fun updateUser(userDto: UserDto): ResponseEntity<UserDto> {
+    fun updateUser(@RequestBody userDto: UserDto): ResponseEntity<UserDto> {
         return ResponseEntity
             .ok()
             .body(userService.updateUser(User.fromUserDto(userDto)).toUserDto())
     }
 
     @PutMapping("/change-password")
-    fun changePassword(passwordChangeDto: PasswordChangeDto): ResponseEntity<UserDto> {
+    fun changePassword(@RequestBody passwordChangeDto: PasswordChangeDto): ResponseEntity<UserDto> {
         return ResponseEntity
             .ok()
             .body(userService.changePassword(passwordChangeDto.userId, passwordChangeDto.password).toUserDto())
@@ -76,5 +77,12 @@ class UserController(
         return ResponseEntity
             .ok()
             .body(userService.findAllUsers().map { it.toUserDto() }.toList())
+    }
+
+    @GetMapping("/non-deleted")
+    fun findAllNonDeletedUsers(): ResponseEntity<List<UserDto>> {
+        return ResponseEntity
+            .ok()
+            .body(userService.findAllNonDeletedUsers().map { it.toUserDto() }.toList())
     }
 }

@@ -66,7 +66,7 @@ class ProductController(
 
     @PutMapping("/{productId}/uncategorize")
     fun uncategorizeProduct(@PathVariable productId: UUID): ResponseEntity<ProductDto> {
-        productService.uncategortizeProduct(productId)
+        productService.uncategorizeProduct(productId)
         return ResponseEntity.ok().build()
     }
 
@@ -89,5 +89,12 @@ class ProductController(
         return ResponseEntity
             .ok()
             .body(productService.findAllProducts().map { it.toProductDto() }.toList())
+    }
+
+    @GetMapping("/active")
+    fun findAllActiveProducts(): ResponseEntity<List<ProductDto>> {
+        return ResponseEntity
+            .ok()
+            .body(productService.findAllActiveProducts().map { it.toProductDto() }.toList())
     }
 }

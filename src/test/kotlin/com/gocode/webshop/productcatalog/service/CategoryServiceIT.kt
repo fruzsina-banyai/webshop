@@ -57,6 +57,16 @@ class CategoryServiceIT {
     }
 
     @Test
+    fun `should throw error on non-existent parent id when creating category`() {
+        val parentCategory = createCategory()
+        categoryService.createCategory(parentCategory)
+
+        val category = createCategory()
+
+        assertThrows<EntityNotFoundException> { categoryService.createCategory(category.copy(parentId = parentCategory.id)) }
+    }
+
+    @Test
     fun `should delete category`() {
         val category = createCategory()
         val createdCategory = categoryService.createCategory(category)
@@ -164,7 +174,7 @@ class CategoryServiceIT {
 
         categoryService.assignParentToCategory(createdCategory.id!!, createdParentCategory.id!!)
 
-        val dbCategory = categoryService.removeParentFormCategory(createdCategory.id!!)
+        val dbCategory = categoryService.removeParentFromCategory(createdCategory.id!!)
 
         assertNull(dbCategory.parentId)
     }

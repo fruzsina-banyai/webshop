@@ -18,11 +18,21 @@ class CategoryService(
             .orElseThrow { EntityNotFoundException(categoryId.toString(), Category::class.java) }
     }
 
+    fun findByParentId(parentId: UUID): List<Category> {
+        if (!existsById(parentId)){
+            throw EntityNotFoundException(parentId.toString(), Category::class.java)
+        }
+        return categoryRepository.findByParentId(parentId)
+    }
+
     fun existsById(categoryId: UUID): Boolean {
         return categoryRepository.existsById(categoryId)
     }
 
     fun createCategory(category: Category): Category {
+        if (category.parentId != null && !existsById(category.parentId)){
+            throw EntityNotFoundException(category.parentId.toString(), Category::class.java)
+        }
         return categoryRepository.save(category.copy(id = null))
     }
 
@@ -56,28 +66,31 @@ class CategoryService(
 
     fun assignParentToCategory(categoryId: UUID, parentId: UUID): Category {
         val category = findCategoryById(categoryId)
-        if (categoryRepository.existsById(parentId)) {
-            return categoryRepository.save(category.copy(parentId = parentId))
-        } else {
+        if (!categoryRepository.existsById(parentId)) {
             throw EntityNotFoundException(parentId.toString(), Category::class.java)
         }
+        return categoryRepository.save(category.copy(parentId = parentId))
     }
 
-    fun removeParentFormCategory(categoryId: UUID): Category {
+    fun removeParentFromCategory(categoryId: UUID): Category {
         val category = findCategoryById(categoryId)
         return categoryRepository.save(category.copy(parentId = null))
     }
 
     fun getProducts(categoryId: UUID): List<Product> {
-        if (existsById(categoryId)) {
-            return productService.findByCategoryId(categoryId)
-        } else {
+        if (!existsById(categoryId)) {
             throw EntityNotFoundException(categoryId.toString(), Category::class.java)
         }
+        return productService.findByCategoryId(categoryId) + getProductsOfChildCategory(categoryId)
     }
 
+    fun getProductsOfChildCategory(categoryId: UUID): List<Product> {
+        return findByParentId(categoryId).flatMap { productService.findByCategoryId(it.id!!) }
+    }
+
+
     fun removeProducts(categoryId: UUID) {
-        getProducts(categoryId).map { productService.uncategortizeProduct(it) }
+        getProducts(categoryId).map { productService.uncategorizeProduct(it) }
     }
 
     fun findAllCategories(): List<Category> {

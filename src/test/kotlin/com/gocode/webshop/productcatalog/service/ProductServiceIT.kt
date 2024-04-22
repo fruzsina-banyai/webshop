@@ -59,6 +59,16 @@ class ProductServiceIT {
     }
 
     @Test
+    fun `should throw error on non-existent category id when creating product`() {
+        val product = createProduct()
+
+        val category = createCategory()
+        categoryService.createCategory(category)
+
+        assertThrows<EntityNotFoundException> { productService.createProduct(product.copy(categoryId = category.id)) }
+    }
+
+    @Test
     fun `should activate product`() {
         val product = createProduct()
         val createdProduct = productService.createProduct(product.copy(active = false))
@@ -81,7 +91,7 @@ class ProductServiceIT {
     }
 
     @Test
-    fun `should throw error on non-existent category id`() {
+    fun `should throw error on non-existent category id when categorizing product`() {
         val product = createProduct()
         val createdProduct = productService.createProduct(product)
 
@@ -123,11 +133,11 @@ class ProductServiceIT {
     }
 
     @Test
-    fun `should uncategorize product with null category id given product id`() {
+    fun `should uncategorize product with null category id given product id when categorizing product`() {
         val product = createProduct()
         val createdProduct = productService.createProduct(product)
 
-        productService.uncategortizeProduct(createdProduct.id!!)
+        productService.uncategorizeProduct(createdProduct.id!!)
 
         val dbProduct = productService.findProductById(createdProduct.id!!)
 
@@ -144,7 +154,7 @@ class ProductServiceIT {
 
         productService.categorizeProduct(createdProduct.id!!, createdCategory.id!!)
 
-        val dbProduct = productService.uncategortizeProduct(createdProduct.id!!)
+        val dbProduct = productService.uncategorizeProduct(createdProduct.id!!)
 
         assertNull(dbProduct.categoryId)
     }
@@ -154,7 +164,7 @@ class ProductServiceIT {
         val product = createProduct()
         val createdProduct = productService.createProduct(product)
 
-        productService.uncategortizeProduct(createdProduct)
+        productService.uncategorizeProduct(createdProduct)
 
         val dbProduct = productService.findProductById(createdProduct.id!!)
 
@@ -171,7 +181,7 @@ class ProductServiceIT {
 
         productService.categorizeProduct(createdProduct.id!!, createdCategory.id!!)
 
-        val dbProduct = productService.uncategortizeProduct(createdProduct)
+        val dbProduct = productService.uncategorizeProduct(createdProduct)
 
         assertNull(dbProduct.categoryId)
     }

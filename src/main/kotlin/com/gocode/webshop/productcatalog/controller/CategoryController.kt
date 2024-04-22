@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.*
@@ -31,51 +32,52 @@ class CategoryController(
     }
 
     @PostMapping
-    fun createCategory(categoryDto: CategoryDto): ResponseEntity<CategoryDto> {
+    fun createCategory(@RequestBody categoryDto: CategoryDto): ResponseEntity<CategoryDto> {
+        val result = categoryService.createCategory(Category.fromCategoryDto(categoryDto)).toCategoryDto()
         return ResponseEntity
             .ok()
-            .body(categoryService.createCategory(Category.fromCategoryDto(categoryDto)).toCategoryDto())
+            .body(result)
     }
 
     @PutMapping("/{categoryId}/deactivate")
-    fun deactivateCategory(categoryId: UUID): ResponseEntity<CategoryDto> {
+    fun deactivateCategory(@PathVariable categoryId: UUID): ResponseEntity<CategoryDto> {
         return ResponseEntity
             .ok()
             .body(categoryService.deactivateCategory(categoryId).toCategoryDto())
     }
 
     @PutMapping("/{categoryId}/activate")
-    fun activateCategory(categoryId: UUID): ResponseEntity<CategoryDto> {
+    fun activateCategory(@PathVariable categoryId: UUID): ResponseEntity<CategoryDto> {
         return ResponseEntity
             .ok()
             .body(categoryService.activateCategory(categoryId).toCategoryDto())
     }
 
     @DeleteMapping("/{categoryId}")
-    fun deleteCategory(categoryId: UUID): ResponseEntity<Unit> {
+    fun deleteCategory(@PathVariable categoryId: UUID): ResponseEntity<Unit> {
         categoryService.deleteCategory(categoryId)
         return ResponseEntity.ok().build()
     }
 
     @PutMapping
-    fun updateCategory(categoryDto: CategoryDto): ResponseEntity<CategoryDto> {
+    fun updateCategory(@RequestBody categoryDto: CategoryDto): ResponseEntity<CategoryDto> {
         return ResponseEntity
             .ok()
             .body(categoryService.updateCategory(Category.fromCategoryDto(categoryDto)).toCategoryDto())
     }
 
     @PutMapping("/assign-parent")
-    fun assignParentToCategory(assignParentToCategoryDto: AssignParentToCategoryDto): ResponseEntity<CategoryDto> {
+    fun assignParentToCategory(@RequestBody assignParentToCategoryDto: AssignParentToCategoryDto): ResponseEntity<CategoryDto> {
         return ResponseEntity
             .ok()
             .body(categoryService.assignParentToCategory(assignParentToCategoryDto.categoryId, assignParentToCategoryDto.parentId).toCategoryDto())
     }
 
-    @PutMapping("/remove-parent")
-    fun removeParentFromCategory(categoryId: UUID): ResponseEntity<CategoryDto> {
+    @PutMapping("/{categoryId}/remove-parent")
+    fun removeParentFromCategory(@PathVariable categoryId: UUID): ResponseEntity<CategoryDto> {
         return ResponseEntity
             .ok()
-            .body(categoryService.removeParentFormCategory(categoryId).toCategoryDto())
+            .body(categoryService.removeParentFromCategory(categoryId).toCategoryDto())
     }
 
     @GetMapping("/{categoryId}/get-products")

@@ -29,7 +29,7 @@ class AddressController(
     }
 
     @PostMapping
-    fun createAddress(addressDto: AddressDto): ResponseEntity<AddressDto> {
+    fun createAddress(@RequestBody addressDto: AddressDto): ResponseEntity<AddressDto> {
         return ResponseEntity
             .ok()
             .body(addressService.createAddress(Address.fromAddressDto(addressDto)).toAddressDto())
@@ -43,7 +43,7 @@ class AddressController(
     }
 
     @PutMapping
-    fun updateAddress(addressDto: AddressDto): ResponseEntity<AddressDto> {
+    fun updateAddress(@RequestBody addressDto: AddressDto): ResponseEntity<AddressDto> {
         return ResponseEntity
             .ok()
             .body(addressService.updateAddress(Address.fromAddressDto(addressDto)).toAddressDto())
@@ -54,5 +54,12 @@ class AddressController(
         return ResponseEntity
             .ok()
             .body(addressService.findAllAddresses().map { it.toAddressDto() }.toList())
+    }
+
+    @GetMapping("/non-deleted")
+    fun findAllNonDeletedAddresses(): ResponseEntity<List<AddressDto>> {
+        return ResponseEntity
+            .ok()
+            .body(addressService.findAllNonDeletedAddresses().map { it.toAddressDto() }.toList())
     }
 }

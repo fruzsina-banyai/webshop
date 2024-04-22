@@ -20,12 +20,23 @@ class ProductService(
     }
 
     fun findByCategoryId(categoryId: UUID): List<Product> {
+        if (!categoryRepository.existsById(categoryId)) {
+            throw EntityNotFoundException(categoryId.toString(), Category::class.java)
+        }
         return productRepository.findByCategoryId(categoryId)
     }
 
+//    fun findProductsByIdList(productIds: List<UUID>): List<Product> {
+//        return productIds.map { findProductById(it) }
+//    }
+
     fun createProduct(product: Product): Product {
+        if (product.categoryId != null && !categoryRepository.existsById(product.categoryId)){
+            throw EntityNotFoundException(product.categoryId.toString(), Category::class.java)
+        }
         return productRepository.save(product.copy(id = null))
     }
+
 
     fun deactivateProduct(productId: UUID): Product {
         val product = findProductById(productId)
@@ -39,19 +50,18 @@ class ProductService(
 
     fun categorizeProduct(productId: UUID, categoryId: UUID): Product {
         val product = findProductById(productId)
-        if (categoryRepository.existsById(categoryId)) {
-            return productRepository.save(product.copy(categoryId = categoryId))
-        } else {
+        if (!categoryRepository.existsById(categoryId)) {
             throw EntityNotFoundException(categoryId.toString(), Category::class.java)
         }
+        return productRepository.save(product.copy(categoryId = categoryId))
     }
 
-    fun uncategortizeProduct(productId: UUID): Product {
+    fun uncategorizeProduct(productId: UUID): Product {
         val product = findProductById(productId)
         return productRepository.save(product.copy(categoryId = null))
     }
 
-    fun uncategortizeProduct(product: Product): Product {
+    fun uncategorizeProduct(product: Product): Product {
         return productRepository.save(product.copy(categoryId = null))
     }
 
@@ -72,12 +82,16 @@ class ProductService(
         )
     }
 
-    fun updateProductStock(productId: UUID, stock: Double) : Product {
+    fun updateProductStock(productId: UUID, stock: Double): Product {
         val product = findProductById(productId)
         return productRepository.save(product.copy(inStock = stock))
     }
 
     fun findAllProducts(): List<Product> {
         return productRepository.findAll()
+    }
+
+    fun findAllActiveProducts(): List<Product> {
+        return findAllProducts().filter { it.active }
     }
 }
