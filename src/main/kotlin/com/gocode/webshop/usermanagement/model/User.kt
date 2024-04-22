@@ -20,6 +20,9 @@ data class User (
     @Column(name = "role", nullable = false)
     val role: String,
 
+    @Column(name = "deleted", nullable = false)
+    val deleted: Boolean = false,
+
     @Column(name = "first_name", nullable = false)
     val firstName: String,
 
@@ -58,6 +61,7 @@ fun User.Companion.fromUserDto(userDto: UserDto) : User {
     return User(
         id = userDto.id,
         role = userDto.role,
+        deleted = userDto.deleted,
         firstName = userDto.firstName,
         lastName = userDto.lastName,
         email = userDto.email,
@@ -69,6 +73,7 @@ fun User.Companion.fromUserDto(userDto: UserDto) : User {
 fun User.toUserDto() : UserDto = UserDto (
     id = id,
     role = role,
+    deleted = deleted,
     firstName = firstName,
     lastName = lastName,
     email = email,

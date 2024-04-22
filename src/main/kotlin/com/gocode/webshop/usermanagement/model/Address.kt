@@ -20,6 +20,9 @@ data class Address (
     @Column(name = "user_id", unique = true, nullable = false, updatable = false)
     val userId: UUID,
 
+    @Column(name = "deleted", nullable = false)
+    val deleted: Boolean = false,
+
     @Column(name = "country", nullable = false)
     val country: String,
 
@@ -58,6 +61,7 @@ fun Address.Companion.fromAddressDto(addressDto: AddressDto) : Address {
     return Address(
         id = addressDto.id,
         userId = addressDto.userId,
+        deleted = addressDto.deleted,
         country = addressDto.country,
         state = addressDto.state,
         zipCode = addressDto.zipCode,
@@ -69,6 +73,7 @@ fun Address.Companion.fromAddressDto(addressDto: AddressDto) : Address {
 fun Address.toAddressDto() : AddressDto = AddressDto(
     id = id,
     userId = userId,
+    deleted = deleted,
     country = country,
     state = state,
     zipCode = zipCode,

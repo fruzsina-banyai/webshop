@@ -6,41 +6,60 @@ import com.gocode.webshop.usermanagement.model.fromAddressDto
 import com.gocode.webshop.usermanagement.model.toAddressDto
 import com.gocode.webshop.usermanagement.service.AddressService
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.util.UUID
 
 @RestController
-@RequestMapping
+@RequestMapping("/address")
 class AddressController(
     private val addressService: AddressService
 ) {
-    fun findAddressById(addressId: UUID): ResponseEntity<AddressDto> {
+    @GetMapping("/{addressId}")
+    fun findAddressById(@PathVariable addressId: UUID): ResponseEntity<AddressDto> {
         return ResponseEntity
             .ok()
             .body(addressService.findAddressById(addressId).toAddressDto())
     }
 
-    fun createAddress(addressDto: AddressDto): ResponseEntity<AddressDto> {
+    @GetMapping("/by-user/{userId}")
+    fun findByUserId(@PathVariable userId: UUID): ResponseEntity<List<AddressDto>> {
+        return ResponseEntity
+            .ok()
+            .body(addressService.findByUserId(userId).map { it.toAddressDto() })
+    }
+
+    @PostMapping
+    fun createAddress(@RequestBody addressDto: AddressDto): ResponseEntity<AddressDto> {
         return ResponseEntity
             .ok()
             .body(addressService.createAddress(Address.fromAddressDto(addressDto)).toAddressDto())
     }
 
-    fun deleteAddress(id: UUID): ResponseEntity<Unit> {
-        addressService.deleteAddress(id)
-        return ResponseEntity.ok().build()
+    @DeleteMapping("/{addressId}")
+    fun deleteAddress(@PathVariable addressId: UUID): ResponseEntity<AddressDto> {
+        return ResponseEntity
+            .ok()
+            .body(addressService.deleteAddress(addressId).toAddressDto())
     }
 
-    fun updateAddress(addressDto: AddressDto): ResponseEntity<AddressDto> {
+    @PutMapping
+    fun updateAddress(@RequestBody addressDto: AddressDto): ResponseEntity<AddressDto> {
         return ResponseEntity
             .ok()
             .body(addressService.updateAddress(Address.fromAddressDto(addressDto)).toAddressDto())
     }
 
+    @GetMapping
     fun findAllAddresses(): ResponseEntity<List<AddressDto>> {
         return ResponseEntity
             .ok()
             .body(addressService.findAllAddresses().map { it.toAddressDto() }.toList())
+    }
+
+    @GetMapping("/non-deleted")
+    fun findAllNonDeletedAddresses(): ResponseEntity<List<AddressDto>> {
+        return ResponseEntity
+            .ok()
+            .body(addressService.findAllNonDeletedAddresses().map { it.toAddressDto() }.toList())
     }
 }

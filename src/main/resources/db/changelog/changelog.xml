@@ -14,16 +14,19 @@
             <column name="role" type="varchar(25)">
                 <constraints nullable="false"/>
             </column>
-            <column name="first_name" type="varchar(50)">
+            <column name="deleted" type="boolean">
                 <constraints nullable="false"/>
             </column>
-            <column name="last_name" type="varchar(50)">
+            <column name="first_name" type="varchar(250)">
                 <constraints nullable="false"/>
             </column>
-            <column name="email" type="varchar(50)">
+            <column name="last_name" type="varchar(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(250)">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column name="phone_number" type="varchar(25)">
+            <column name="phone_number" type="varchar(225)">
                 <constraints nullable="false"/>
             </column>
             <column name="password" type="varchar(250)">
@@ -38,6 +41,9 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="user_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deleted" type="boolean">
                 <constraints nullable="false"/>
             </column>
             <column name="country" type="varchar(25)">
@@ -56,9 +62,63 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        
+
         <addForeignKeyConstraint baseTableName="address" baseColumnNames="user_id" constraintName="fk_user_on_address"
                                  referencedTableName="user"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="#13_Add_product_table" author="fruzsina_banyai">
+        <createTable tableName="product">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="category_id" type="uuid">
+                <constraints nullable="true"/>
+            </column>
+            <column name="name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="active" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="text">
+                <constraints nullable="true"/>
+            </column>
+            <column name="price" type="double">
+                <constraints nullable="false"/>
+            </column>
+            <column name="in_stock" type="double">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="#13_Add_category_table" author="fruzsina-banyai">
+        <createTable tableName="category">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="active" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="text">
+                <constraints nullable="true"/>
+            </column>
+            <column name="parent_id" type="uuid">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="product" baseColumnNames="category_id"
+                                 constraintName="fk_category_on_product" referencedTableName="category"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="category" baseColumnNames="parent_id"
+                                 constraintName="fk_category_on_parent_category"
+                                 referencedTableName="category"
                                  referencedColumnNames="id"/>
     </changeSet>
 
