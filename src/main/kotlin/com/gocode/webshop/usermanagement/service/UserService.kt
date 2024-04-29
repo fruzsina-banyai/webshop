@@ -5,6 +5,7 @@ import com.gocode.webshop.constants.DELETED
 import com.gocode.webshop.usermanagement.model.Address
 import com.gocode.webshop.usermanagement.model.User
 import com.gocode.webshop.usermanagement.repository.UserRepository
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.lang.IllegalArgumentException
 import java.util.*
@@ -13,18 +14,22 @@ import java.util.*
 class UserService(
     private val userRepository: UserRepository,
     private val addressService: AddressService,
-    //private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder
 ) {
     fun findUserById(userId: UUID): User {
         return userRepository.findById(userId)
             .orElseThrow { throw EntityNotFoundException(userId.toString(), User::class.java) }
     }
 
+    fun findByEmail(email: String): User {
+        return userRepository.findByEmail(email) ?: throw EntityNotFoundException(email, User::class.java)
+    }
+
     fun createUser(user: User): User {
         return userRepository.save(
             user.copy(
                 id = null,
-                password = user.password
+                password = passwordEncoder.encode(user.password)
             )
         )
     }
@@ -73,7 +78,7 @@ class UserService(
         }
         return userRepository.save(
             originalUser.copy(
-                password = password
+                password = passwordEncoder.encode(password)
             )
         )
     }
