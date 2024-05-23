@@ -4,6 +4,7 @@ import com.gocode.webshop.usermanagement.service.UserDetailsService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.web.SecurityFilterChain
@@ -24,8 +25,10 @@ class SecurityConfiguration(private val userDetailsService: UserDetailsService){
         http {
             formLogin {  }
             httpBasic {  }
+            csrf { disable() }
+            cors { disable() }
             authorizeRequests {
-                authorize(anyRequest, permitAll)
+                authorize(anyRequest, authenticated)
             }
         }
         return http.build()

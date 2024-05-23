@@ -1,7 +1,7 @@
 package com.gocode.webshop.usermanagement.service
 
-import com.gocode.webshop.errors.EntityNotFoundException
 import com.gocode.webshop.constants.DELETED
+import com.gocode.webshop.errors.EntityNotFoundException
 import com.gocode.webshop.usermanagement.model.Address
 import com.gocode.webshop.usermanagement.model.User
 import com.gocode.webshop.usermanagement.repository.UserRepository
