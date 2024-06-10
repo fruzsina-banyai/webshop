@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.ActiveProfiles
 import java.lang.IllegalArgumentException
 import java.util.*
@@ -46,6 +48,7 @@ private const val ANY_STREET_ADDRESS = "streetAddress"
 private const val DELETED = "deleted"
 
 @ActiveProfiles("test")
+@WithMockUser(roles = ["ADMIN"])
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class UserServiceIT {
     @Autowired
@@ -54,8 +57,8 @@ class UserServiceIT {
     @Autowired
     lateinit var addressService: AddressService
 
-//    @Autowired
-//    lateinit var passwordEncoder: PasswordEncoder
+    @Autowired
+    lateinit var passwordEncoder: PasswordEncoder
 
     @Test
     fun `should save new user with null id`() {
@@ -66,7 +69,7 @@ class UserServiceIT {
 
         assertNotNull(createdUser.id)
         assertEquals(createdUser.id, dbUser.id)
-//        assertTrue(passwordEncoder.matches(ANY_PASSWORD, dbUser.password))
+        assertTrue(passwordEncoder.matches(ANY_PASSWORD, dbUser.password))
     }
 
     @Test
@@ -78,7 +81,7 @@ class UserServiceIT {
 
         assertNotNull(dbUser.id)
         assertEquals(createdUser.id, dbUser.id)
-//        assertTrue(passwordEncoder.matches(ANY_PASSWORD, dbUser.password))
+        assertTrue(passwordEncoder.matches(ANY_PASSWORD, dbUser.password))
     }
 
     @Test
@@ -190,9 +193,9 @@ class UserServiceIT {
         val createdUser = userService.createUser(user)
 
         userService.changePassword(createdUser.id!!, UPDATED_PASSWORD)
-//        val dbUser = userService.findUserById(createdUser.id!!)
+        val dbUser = userService.findUserById(createdUser.id!!)
 
-//        assertTrue(passwordEncoder.matches(UPDATED_PASSWORD, dbUser.password))
+        assertTrue(passwordEncoder.matches(UPDATED_PASSWORD, dbUser.password))
     }
 
     @Test

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.ActiveProfiles
 import java.lang.IllegalArgumentException
 import java.util.*
@@ -27,6 +28,7 @@ private const val UPDATED_NAME = "updatedName"
 private const val UPDATED_DESCRIPTION = "updatedDescription"
 
 @ActiveProfiles("test")
+@WithMockUser(roles = ["ADMIN"])
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CategoryServiceIT {
     @Autowired
@@ -238,6 +240,7 @@ class CategoryServiceIT {
         assertTrue(result.isEmpty())
     }
 
+    @WithMockUser(roles = ["ADMIN"])
     companion object {
         fun createProduct(): Product {
             return Product(

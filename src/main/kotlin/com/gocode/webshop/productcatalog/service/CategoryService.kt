@@ -4,6 +4,7 @@ import com.gocode.webshop.productcatalog.model.Category
 import com.gocode.webshop.productcatalog.model.Product
 import com.gocode.webshop.productcatalog.repository.CategoryRepository
 import com.gocode.webshop.errors.EntityNotFoundException
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import java.lang.IllegalArgumentException
 import java.util.UUID
@@ -29,6 +30,7 @@ class CategoryService(
         return categoryRepository.existsById(categoryId)
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     fun createCategory(category: Category): Category {
         if (category.parentId != null && !existsById(category.parentId)){
             throw EntityNotFoundException(category.parentId.toString(), Category::class.java)
@@ -36,21 +38,25 @@ class CategoryService(
         return categoryRepository.save(category.copy(id = null))
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     fun deactivateCategory(categoryId: UUID): Category {
         val category = findCategoryById(categoryId)
         return categoryRepository.save(category.copy(active = false))
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     fun activateCategory(categoryId: UUID): Category {
         val category = findCategoryById(categoryId)
         return categoryRepository.save(category.copy(active = true))
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     fun deleteCategory(categoryId: UUID) {
         removeProducts(categoryId)
         categoryRepository.deleteById(categoryId)
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     fun updateCategory(category: Category): Category {
         if (category.id == null) {
             throw IllegalArgumentException("Can't update category with null id!")
@@ -64,6 +70,7 @@ class CategoryService(
         )
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     fun assignParentToCategory(categoryId: UUID, parentId: UUID): Category {
         val category = findCategoryById(categoryId)
         if (!categoryRepository.existsById(parentId)) {
@@ -72,6 +79,7 @@ class CategoryService(
         return categoryRepository.save(category.copy(parentId = parentId))
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     fun removeParentFromCategory(categoryId: UUID): Category {
         val category = findCategoryById(categoryId)
         return categoryRepository.save(category.copy(parentId = null))
@@ -88,7 +96,7 @@ class CategoryService(
         return findByParentId(categoryId).flatMap { productService.findByCategoryId(it.id!!) }
     }
 
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     fun removeProducts(categoryId: UUID) {
         getProducts(categoryId).map { productService.uncategorizeProduct(it) }
     }

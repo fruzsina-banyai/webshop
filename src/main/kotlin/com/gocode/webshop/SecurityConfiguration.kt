@@ -14,7 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder
 
 @Configuration
 @EnableWebSecurity
-class SecurityConfiguration(private val userDetailsService: UserDetailsService){
+@EnableMethodSecurity
+class SecurityConfiguration(private val userDetailsService: UserDetailsService) {
     @Bean
     fun passwordEncoder(): PasswordEncoder {
         return BCryptPasswordEncoder()
@@ -23,13 +24,13 @@ class SecurityConfiguration(private val userDetailsService: UserDetailsService){
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http {
-            formLogin {  }
-            httpBasic {  }
             csrf { disable() }
             cors { disable() }
-            authorizeRequests {
-                authorize(anyRequest, authenticated)
+            authorizeHttpRequests {
+                authorize(anyRequest, permitAll)
             }
+            formLogin {  }
+            httpBasic {  }
         }
         return http.build()
     }
