@@ -5,6 +5,7 @@ import com.gocode.webshop.productcatalog.model.Product
 import com.gocode.webshop.productcatalog.repository.ProductRepository
 import com.gocode.webshop.errors.EntityNotFoundException
 import com.gocode.webshop.productcatalog.repository.CategoryRepository
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import java.lang.IllegalArgumentException
 import java.util.*
@@ -30,6 +31,7 @@ class ProductService(
 //        return productIds.map { findProductById(it) }
 //    }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     fun createProduct(product: Product): Product {
         if (product.categoryId != null && !categoryRepository.existsById(product.categoryId)){
             throw EntityNotFoundException(product.categoryId.toString(), Category::class.java)
@@ -37,17 +39,19 @@ class ProductService(
         return productRepository.save(product.copy(id = null))
     }
 
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     fun deactivateProduct(productId: UUID): Product {
         val product = findProductById(productId)
         return productRepository.save(product.copy(active = false))
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     fun activateProduct(productId: UUID): Product {
         val product = findProductById(productId)
         return productRepository.save(product.copy(active = true))
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     fun categorizeProduct(productId: UUID, categoryId: UUID): Product {
         val product = findProductById(productId)
         if (!categoryRepository.existsById(categoryId)) {
@@ -56,15 +60,18 @@ class ProductService(
         return productRepository.save(product.copy(categoryId = categoryId))
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     fun uncategorizeProduct(productId: UUID): Product {
         val product = findProductById(productId)
         return productRepository.save(product.copy(categoryId = null))
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     fun uncategorizeProduct(product: Product): Product {
         return productRepository.save(product.copy(categoryId = null))
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     fun updateProduct(product: Product): Product {
         if (product.id == null) {
             throw IllegalArgumentException("Can't update product with null id!")
@@ -82,11 +89,13 @@ class ProductService(
         )
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     fun updateProductStock(productId: UUID, stock: Double): Product {
         val product = findProductById(productId)
         return productRepository.save(product.copy(inStock = stock))
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     fun findAllProducts(): List<Product> {
         return productRepository.findAll()
     }

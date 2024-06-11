@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.ActiveProfiles
 import java.lang.IllegalArgumentException
 import java.util.*
@@ -45,6 +46,7 @@ private const val UPDATED_STREET_ADDRESS = "updatedStreetAddress"
 private const val DELETED = "deleted"
 
 @ActiveProfiles("test")
+@WithMockUser(roles = ["ADMIN"])
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AddressServiceIT {
     @Autowired
@@ -198,6 +200,7 @@ class AddressServiceIT {
         assertEquals(DELETED + createdAddress.id, dbAddress.streetAddress)
     }
 
+    @WithMockUser(roles = ["ADMIN"])
     companion object{
         fun createAddress(userId: UUID): Address {
             return Address(
