@@ -1,5 +1,10 @@
 # Webshop
 
+## Work in progress
+This project is currently in development. So far, I've successfully implemented the User Management Service, Product Catalog, and Shopping Cart functionalities. Looking ahead, my next goal is to advance the project to a stage where I can begin working on a user interface that seamlessly integrates with the existing backend.
+
+---
+
 ### Objective of the Website 
 The primary aim of the website is to establish a user-friendly and secure online shopping platform. Its adaptable nature allows for customization, catering to the distinct needs and preferences of each customer. Whether personalizing the shopping experience or ensuring a seamless transaction process, the website is designed to deliver a user-centric and flexible webshop environment.
 
@@ -13,7 +18,7 @@ As a user, I aim to monitor my orders and revisit information about my previous 
 ### [Product Catalog](https://github.com/fruzsina-banyai/webshop/blob/main/documentation/product_catalog/product_catalog.md)
 For users, navigating the product catalog is an essential feature. Effortlessly locate products by category, price range, or relevant criteria, ensuring a user-friendly and efficient shopping process. On the administrative side, the ability to modify, organize, and customize the product range provides control and flexibility, presenting a dynamic and appealing catalog.
 
-### Shopping Cart
+### [Shopping Cart](https://github.com/fruzsina-banyai/webshop/blob/main/documentation/shopping_cart/shopping_cart.md)
 The shopping cart feature should not only collect various products chosen to be purchased but also displays selected items, quantities, and prices. This element simplifies the decision-making process, aiding users in finalizing their selections before proceeding to checkout.
 
 ### Customization
