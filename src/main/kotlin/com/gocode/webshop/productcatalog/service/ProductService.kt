@@ -5,6 +5,7 @@ import com.gocode.webshop.productcatalog.model.Product
 import com.gocode.webshop.productcatalog.repository.ProductRepository
 import com.gocode.webshop.errors.EntityNotFoundException
 import com.gocode.webshop.productcatalog.repository.CategoryRepository
+import com.gocode.webshop.shoppingcart.service.CartService
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import java.lang.IllegalArgumentException
@@ -13,7 +14,8 @@ import java.util.*
 @Service
 class ProductService(
     private val productRepository: ProductRepository,
-    private val categoryRepository: CategoryRepository
+    private val categoryRepository: CategoryRepository,
+    private val cartService: CartService
 ) {
     fun findProductById(productId: UUID): Product {
         return productRepository.findById(productId)
@@ -27,10 +29,6 @@ class ProductService(
         return productRepository.findByCategoryId(categoryId)
     }
 
-//    fun findProductsByIdList(productIds: List<UUID>): List<Product> {
-//        return productIds.map { findProductById(it) }
-//    }
-
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     fun createProduct(product: Product): Product {
         if (product.categoryId != null && !categoryRepository.existsById(product.categoryId)){
@@ -42,6 +40,7 @@ class ProductService(
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     fun deactivateProduct(productId: UUID): Product {
         val product = findProductById(productId)
+        cartService.deleteItemsByProductId(productId)
         return productRepository.save(product.copy(active = false))
     }
 

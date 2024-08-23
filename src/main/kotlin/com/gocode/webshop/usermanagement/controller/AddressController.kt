@@ -36,10 +36,10 @@ class AddressController(
     }
 
     @DeleteMapping("/{addressId}")
-    fun deleteAddress(@PathVariable addressId: UUID): ResponseEntity<AddressDto> {
+    fun deleteAddress(@PathVariable addressId: UUID): ResponseEntity<Unit> {
         return ResponseEntity
             .ok()
-            .body(addressService.deleteAddress(addressId).toAddressDto())
+            .body(addressService.deleteAddress(addressId))
     }
 
     @PutMapping

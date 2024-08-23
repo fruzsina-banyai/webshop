@@ -13,53 +13,59 @@ import java.lang.IllegalArgumentException
 import java.util.UUID
 
 @Service
-class AddressService (
-    private val addressRepository : AddressRepository,
+class AddressService(
+    private val addressRepository: AddressRepository,
     private val userRepository: UserRepository
 ) {
     @PostAuthorize("hasRole('ROLE_ADMIN') or returnObject.userId == @userService.getCurrentUserId()")
-    fun findAddressById(addressId: UUID) : Address {
-        return addressRepository.findById(addressId).orElseThrow { throw EntityNotFoundException(addressId.toString(), Address::class.java) }
+    fun findAddressById(addressId: UUID): Address {
+        return addressRepository.findById(addressId)
+            .orElseThrow { throw EntityNotFoundException(addressId.toString(), Address::class.java) }
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or #userId == @userService.getCurrentUserId()")
-    fun findByUserId(userId: UUID) : List<Address> {
+    fun findByUserId(userId: UUID): List<Address> {
+        if (!userRepository.existsById(userId)) {
+            throw EntityNotFoundException(userId.toString(), User::class.java)
+        }
         return addressRepository.findByUserId(userId)
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or #address.userId == @userService.getCurrentUserId()")
-    fun createAddress(address: Address) : Address {
+    fun createAddress(address: Address): Address {
         if (isUserDeleted(address.userId)) {
             throw IllegalArgumentException("Can't create address for deleted user")
         }
-        return addressRepository.save(address.copy(id=null))
+        return addressRepository.save(address.copy(id = null))
     }
 
     @PostAuthorize("hasRole('ROLE_ADMIN') or returnObject.userId == @userService.getCurrentUserId()")
-    fun deleteAddress(addressId: UUID) : Address {
+    fun deleteAddress(addressId: UUID) {
         val address = findAddressById(addressId)
-        if (address.deleted) {
-            throw IllegalArgumentException("Can't delete already deleted address")
+        if (!address.deleted) {
+            addressRepository.save(
+                address.copy(
+                    streetAddress = DELETED + addressId,
+                    deleted = true,
+                )
+            )
         }
-        return addressRepository.save(address.copy(
-            streetAddress = DELETED + addressId,
-            deleted = true,
-        ))
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or #address.userId == @userService.getCurrentUserId()")
-    fun deleteAddress(address: Address) : Address {
-        if (address.deleted) {
-            throw IllegalArgumentException("Can't delete already deleted address")
+    fun deleteAddress(address: Address) {
+        if (!address.deleted) {
+            addressRepository.save(
+                address.copy(
+                    streetAddress = DELETED + address.id,
+                    deleted = true,
+                )
+            )
         }
-        return addressRepository.save(address.copy(
-            streetAddress = DELETED + address.id,
-            deleted = true,
-        ))
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or #address.userId == @userService.getCurrentUserId()")
-    fun updateAddress(address: Address) : Address {
+    fun updateAddress(address: Address): Address {
         if (address.id == null) {
             throw IllegalArgumentException("Can't update address with null id")
         }
@@ -67,13 +73,18 @@ class AddressService (
         if (originalAddress.deleted) {
             throw IllegalArgumentException("Can't update deleted address")
         }
-        return addressRepository.save(originalAddress.copy(
-            country = address.country,
-            state = address.state,
-            zipCode = address.zipCode,
-            city = address.city,
-            streetAddress = address.streetAddress
-        ))
+        if (isUserDeleted(originalAddress.userId)) {
+            throw IllegalArgumentException("Can't update address of a deleted user")
+        }
+        return addressRepository.save(
+            originalAddress.copy(
+                country = address.country,
+                state = address.state,
+                zipCode = address.zipCode,
+                city = address.city,
+                streetAddress = address.streetAddress
+            )
+        )
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -86,9 +97,9 @@ class AddressService (
         return findAllAddresses().filter { !it.deleted }
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or #userId == @userService.getCurrentUserId()")
-    fun isUserDeleted(userId: UUID): Boolean {
-        val user = userRepository.findById(userId).orElseThrow { EntityNotFoundException(userId.toString(), User::class.java) }
+    private fun isUserDeleted(userId: UUID): Boolean {
+        val user =
+            userRepository.findById(userId).orElseThrow { EntityNotFoundException(userId.toString(), User::class.java) }
         return user.deleted
     }
 }

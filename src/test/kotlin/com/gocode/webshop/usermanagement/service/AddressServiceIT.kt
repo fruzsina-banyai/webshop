@@ -151,17 +151,6 @@ class AddressServiceIT {
     }
 
     @Test
-    fun `should throw error on already deleted address when deleting given address id`() {
-        val user = userService.createUser(createUser())
-        val address = createAddress(user.id!!)
-
-        val createdAddress = addressService.createAddress(address)
-        addressService.deleteAddress(createdAddress.id!!)
-
-        assertThrows<IllegalArgumentException> { addressService.deleteAddress(createdAddress.id!!) }
-    }
-
-    @Test
     fun `should correctly change fields on delete given address id`() {
         val user = userService.createUser(createUser())
         val address = createAddress(user.id!!)
@@ -173,17 +162,6 @@ class AddressServiceIT {
 
         assertTrue(dbAddress.deleted)
         assertEquals(DELETED + createdAddress.id, dbAddress.streetAddress)
-    }
-
-    @Test
-    fun `should throw error on already deleted address when deleting`() {
-        val user = userService.createUser(createUser())
-        val address = createAddress(user.id!!)
-
-        val createdAddress = addressService.createAddress(address)
-        val dbAddress = addressService.deleteAddress(createdAddress)
-
-        assertThrows<IllegalArgumentException> { addressService.deleteAddress(dbAddress) }
     }
 
     @Test
