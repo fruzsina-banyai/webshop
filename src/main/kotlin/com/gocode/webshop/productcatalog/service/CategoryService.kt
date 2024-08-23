@@ -52,8 +52,10 @@ class CategoryService(
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     fun deleteCategory(categoryId: UUID) {
-        removeProducts(categoryId)
-        categoryRepository.deleteById(categoryId)
+        if (existsById(categoryId)) {
+            removeProducts(categoryId)
+            categoryRepository.deleteById(categoryId)
+        }
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")

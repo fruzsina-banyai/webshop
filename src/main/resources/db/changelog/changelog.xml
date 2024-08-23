@@ -121,5 +121,45 @@
                                  referencedTableName="category"
                                  referencedColumnNames="id"/>
     </changeSet>
+    
+    <changeSet id="#17_Add_cart_table" author="fruzsina-banyai">
+        <createTable tableName="cart">
+            <column name="cart_id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="UUID">
+                <constraints unique="true" nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="cart" baseColumnNames="user_id" constraintName="fk_cart_on_user" referencedTableName="user"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="#17_Add_cart_items_table" author="fruzsina-banyai">
+        <createTable tableName="cart_items">
+            <column name="cart_id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="product_id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="count" type="double">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <renameColumn tableName="cart" oldColumnName="cart_id" newColumnName="id" columnDataType="UUID"/>
+
+        <addForeignKeyConstraint baseTableName="cart_items" baseColumnNames="cart_id"
+                                 constraintName="fk_cart_items_on_cart"
+                                 referencedTableName="cart"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="cart_items" baseColumnNames="product_id"
+                                 constraintName="fk_cart_items_on_product"
+                                 referencedTableName="product"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
 
 </databaseChangeLog>

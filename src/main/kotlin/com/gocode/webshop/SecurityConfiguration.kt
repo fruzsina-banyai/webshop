@@ -27,7 +27,7 @@ class SecurityConfiguration(private val userDetailsService: UserDetailsService) 
             csrf { disable() }
             cors { disable() }
             authorizeHttpRequests {
-                authorize(anyRequest, permitAll)
+                authorize(anyRequest, authenticated)
             }
             formLogin {  }
             httpBasic {  }

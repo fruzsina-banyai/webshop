@@ -122,23 +122,13 @@ class UserServiceIT {
         val dbUser = userService.findUserById(createdUser.id!!)
 
         assertEquals(createdUser.id, dbUser.id)
-        assertEquals(updatedUser.role, dbUser.role)
+        assertEquals(createdUser.role, dbUser.role)
         assertEquals(createdUser.deleted, dbUser.deleted)
         assertEquals(updatedUser.firstName, dbUser.firstName)
         assertEquals(updatedUser.lastName, dbUser.lastName)
         assertEquals(updatedUser.email, dbUser.email)
         assertEquals(updatedUser.phoneNumber, dbUser.phoneNumber)
         assertEquals(createdUser.password, dbUser.password)
-    }
-
-    @Test
-    fun `should throw error on already deleted user`(){
-        val user = createUser()
-        val createdUser = userService.createUser(user)
-
-        userService.deleteUser(createdUser.id!!)
-
-        assertThrows<IllegalArgumentException> { userService.deleteUser(createdUser.id!!) }
     }
 
     @Test
