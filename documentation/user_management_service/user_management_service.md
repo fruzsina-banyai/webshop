@@ -48,10 +48,12 @@ classDiagram
 
 ```mermaid
 classDiagram
-    class UserRepository {      
+    class UserRepository {
+        +findByEmail(email: String) User
+        +existsByEmail(email: String) Boolean
     }
     class AddressRepository {
-        +findByUserId(userId) List "Address"       
+        +findByUserId(userId: UUID) List "Address"       
     }
 ```
 
@@ -61,12 +63,14 @@ classDiagram
     class UserService {      
         -userRepository : UserRepository
         -addressRepository : AddressRepository
+        -cartRepository : CartRepository
         -passwordEncoder: passwordEncoder
         +createUser(user: User) User
         +deleteUser(userId: UUID) User
         +updateUser(user: User) User
         +changePassword(userId: UUID, password: String) User
         +findUserById(userId: UUID) User
+        +findByEmail(email: String) User
         +getAddresses(userId: UUID) List "Address"
         +deleteAddresses(userId: UUID)
         +findAllUsers() List "User"
