@@ -30,9 +30,18 @@ flowchart LR
 ```mermaid
 classDiagram
   class Cart {
-    -cartId : UUID
+    -id : UUID
     -userId : UUID
-    -productIds : List "UUID"
+  }
+  class CartItem {
+    -id : CartItemId
+    -cart : Cart
+    -product : Product
+    -count : Double
+  }
+  class CartItemId {
+    -cartId : UUID
+    -productId : UUID
   }
 ```
 
@@ -42,22 +51,29 @@ classDiagram
   class CartRepository {
     +findByUserId(userId: UUID) Cart
   }
+  class CartItemRepository {
+    +findAllByIdCartId(cartId: UUID) List"CartItem"
+    +findAllByIdProductId(productId: UUID) List"CartItem"
+  }
 ```
 
 ## Service package
 ```mermaid
 classDiagram
-  class CartSerevice{
-    -userService : UserService
-    -productService : ProductService
-    +createCart(cart: Cart) Cart
-    +deleteCart(cartId: UUID)
-    +emptyCart(cartId: UUID) Cart
-    +findCartById(cartId: UUID) Cart
-    +getProducts(cartId: UUID) List "UUID"
-    +addProductsToCart(products: List "UUID") Cart
-    +removeProductsFromCart(products: List "UUID") Cart
-    +calculatePriceOfProducts(cartId: UUID) Double
+  class CartService{
+    -cartRepository : CartRepository
+    -cartItemRepository : CartItemRepository
+    -userService : UserService 
+    +findCartById(cartId: UUID) Cart 
+    +findCartByUserId(userId: UUID) Cart 
+    +findCartItemById(cartItemId: CartItemId) CartItem 
+    +findCartItemsByProductId(productId: UUID) List"CartItem"
+    +findCartItemsByCartId(cartId: UUID) List"CartItem"
+    +emptyCart(cartId: UUID)
+    +addItemToCart(cartItem: CartItem) CartItem 
+    +deleteItemsByProductId(productId: UUID) 
+    +removeItemFromCart(cartItemId: CartItemId) 
+    +updateItemCountInCart(cartItem: CartItem) 
   }
 ```
 
@@ -66,13 +82,16 @@ classDiagram
 classDiagram
   class CartController{
     -cartService : CartService
-    +createCart(cartDto: CartDto) ResponseEntity "CartDto"
-    +deleteCart(cartDto: CartDto) ResponseEntity "Unit"
-    +emptyCart(cartId: UUID) ResponseEntity "CartDto"
-    +findCartById(cartId: UUID) ResponseEntity "CartDto"
-    +addProductsToCart(products: List"UUID") ResponseEntity "CartDto"
-    +removeProductsFromCart(products: List"UUID") ResponseEntity "CartDto"
-    +calculatePriceOfProducts(cartId: UUID) ResponseEntity "Double"
+    +findCartById(cartId: UUID) ResponseEntity"CartDto"
+    +findCartByUserId(userId: UUID) ResponseEntity"CartDto" 
+    +findCartItemById(cartItemId: CartItemId) "CartItemDto" 
+    +findCartItemsByProductId(productId: UUID) ResponseEntity"List"CartItemDto"" 
+    +findCartItemsByCartId(cartId: UUID) ResponseEntity"List"CartItem""
+    +emptyCart(cartId: UUID) ResponseEntity"Unit"
+    +addItemToCart(cartItem: CartItem) ResponseEntity"CartItemDto" 
+    +deleteItemsByProductId(productId: UUID) ResponseEntity"Unit"
+    +removeItemFromCart(cartItemId: CartItemId) ResponseEntity"Unit"
+    +updateItemCountInCart(cartItem: CartItem) ResponseEntity"Unit"
   }
 ```
 
